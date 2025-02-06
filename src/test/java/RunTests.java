@@ -23,13 +23,13 @@ public class RunTests {
     static Properties properties = LoadProperties.getProperties();
     PageElements pageElements = new PageElements();
 
-    long timeoutInSeconds = Long.parseLong(properties.getProperty("timeout.in.seconds"));
+    long timeoutInSeconds = Long.parseLong(properties.getProperty("timeout.in.seconds"))*1000;
     int rerunCount = Integer.parseInt(properties.getProperty("rerun.count"));
 
     List<String> urls = new LoadURLs().getURLs();
 
-    long randMin = 3000;
-    long randMax = 10000;
+    long randMin = Long.parseLong(properties.getProperty("rand.min.sec"))*1000;
+    long randMax = Long.parseLong(properties.getProperty("rand.max.sec"))*1000;
 
     @BeforeEach
     void setUp() {
@@ -93,7 +93,7 @@ public class RunTests {
                 sleep(10 * 1000);
             }
 
-            sleep(timeoutInSeconds * 1000);
+            sleep(timeoutInSeconds);
             Selenide.closeWindow();
         }
     }
