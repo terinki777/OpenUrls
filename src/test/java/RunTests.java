@@ -27,11 +27,11 @@ public class RunTests {
 
     List<String> urls = new LoadURLs().getURLs();
 
-    long minOpen = Long.parseLong(properties.getProperty("open.min.sec"))*1000;
-    long maxOpen = Long.parseLong(properties.getProperty("open.max.sec"))*1000;
+    long minOpen = Long.parseLong(properties.getProperty("open.min.sec")) * 1000;
+    long maxOpen = Long.parseLong(properties.getProperty("open.max.sec")) * 1000;
 
-    long minClose = Long.parseLong(properties.getProperty("close.min.sec"))*1000;
-    long maxClose = Long.parseLong(properties.getProperty("close.max.sec"))*1000;
+    long minClose = Long.parseLong(properties.getProperty("close.min.sec")) * 1000;
+    long maxClose = Long.parseLong(properties.getProperty("close.max.sec")) * 1000;
 
     @BeforeEach
     void setUp() {
@@ -44,6 +44,9 @@ public class RunTests {
     @AfterAll
     static void closeDriver() {
         webdriver().driver().close();
+        System.out.println("*******************************************************************");
+        System.out.println("The launch is completed");
+        System.out.println("*******************************************************************");
     }
 
     @Test
@@ -74,6 +77,9 @@ public class RunTests {
         sleep(pauseBeforeOpen);
 
         for (int i = 0; i < rerunCount; i++) {
+            System.out.println("*******************************************************************");
+            System.out.printf("THREAD '%s': OPEN browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
+            System.out.println("*******************************************************************");
             open(urls.get(index));
 
             try {
@@ -98,6 +104,12 @@ public class RunTests {
 
             sleep(pauseBeforeClose);
             Selenide.closeWindow();
+            System.out.println("*******************************************************************");
+            System.out.printf("THREAD '%s': CLOSE browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
+            System.out.println("*******************************************************************");
         }
+        System.out.println("*******************************************************************");
+        System.out.printf("THREAD '%s' is completed%n", Thread.currentThread().getName());
+        System.out.println("*******************************************************************");
     }
 }
