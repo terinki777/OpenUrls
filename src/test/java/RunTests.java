@@ -105,7 +105,7 @@ public class RunTests {
                         break;
                     sleep(10 * 1000);
                 }
-                getWebDriver().manage().window().minimize();
+
             } catch (Error e) {
                 e.getMessage();
             } finally {
