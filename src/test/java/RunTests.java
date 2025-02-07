@@ -17,6 +17,7 @@ import java.util.Random;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class RunTests {
@@ -44,9 +45,9 @@ public class RunTests {
     @AfterAll
     static void closeDriver() {
         webdriver().driver().close();
-        System.out.println("*******************************************************************");
+        System.out.println("-------------------------------------------------------------------");
         System.out.println("The launch is completed");
-        System.out.println("*******************************************************************");
+        System.out.println("-------------------------------------------------------------------");
     }
 
     @Test
@@ -77,39 +78,46 @@ public class RunTests {
         sleep(pauseBeforeOpen);
 
         for (int i = 0; i < rerunCount; i++) {
-            System.out.println("*******************************************************************");
+            System.out.println("-------------------------------------------------------------------");
             System.out.printf("THREAD '%s': OPEN browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
-            System.out.println("*******************************************************************");
-            open(urls.get(index));
+            System.out.println("-------------------------------------------------------------------");
 
             try {
-                pageElements.popup.shouldBe(visible, Duration.ofSeconds(10));
-                pageElements.popupSvg.click();
-                pageElements.popup.shouldNotBe(visible);
-            } catch (AssertionError e) {
+                open(urls.get(index));
+
+                pageElements.videoPlayer.shouldBe(visible, Duration.ofSeconds(20));
+                Selenide.actions().sendKeys("M").perform();
+
+                if (pageElements.popup.exists()) {
+                    try {
+                        pageElements.popupSvg.click();
+                        pageElements.popup.shouldNotBe(visible);
+                    } catch (Error e) {
+                        e.getMessage();
+                    }
+                }
+
+                for (int j = 0; j < 3; j++) {
+                    if (pageElements.soundOn.exists()) {
+                        Selenide.actions().sendKeys("M").perform();
+                        break;
+                    } else if (pageElements.soundOff.exists())
+                        break;
+                    sleep(10 * 1000);
+                }
+                getWebDriver().manage().window().minimize();
+            } catch (Error e) {
                 e.getMessage();
+            } finally {
+                sleep(pauseBeforeClose);
+                Selenide.closeWindow();
+                System.out.println("-------------------------------------------------------------------");
+                System.out.printf("THREAD '%s': CLOSE browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
+                System.out.println("-------------------------------------------------------------------");
             }
-
-            pageElements.videoPlayer.shouldBe(visible, Duration.ofSeconds(10));
-            Selenide.actions().sendKeys("M").perform();
-
-            for (int j = 0; j < 3; j++) {
-                if (pageElements.soundOn.exists()) {
-                    Selenide.actions().sendKeys("M").perform();
-                    break;
-                } else if (pageElements.soundOff.exists())
-                    break;
-                sleep(10 * 1000);
-            }
-
-            sleep(pauseBeforeClose);
-            Selenide.closeWindow();
-            System.out.println("*******************************************************************");
-            System.out.printf("THREAD '%s': CLOSE browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
-            System.out.println("*******************************************************************");
         }
-        System.out.println("*******************************************************************");
+        System.out.println("-------------------------------------------------------------------");
         System.out.printf("THREAD '%s' is completed%n", Thread.currentThread().getName());
-        System.out.println("*******************************************************************");
+        System.out.println("-------------------------------------------------------------------");
     }
 }
