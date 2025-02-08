@@ -55,21 +55,6 @@ public class RunTests {
         execution();
     }
 
-    //@Test
-    public void runTest2() {
-        execution();
-    }
-
-    //@Test
-    public void runTest3() {
-        execution();
-    }
-
-    //@Test
-    public void runTest4() {
-        execution();
-    }
-
     void execution() {
         Random random = new Random();
         long pauseBeforeOpen = random.nextLong(maxOpen - minOpen) + minOpen;
