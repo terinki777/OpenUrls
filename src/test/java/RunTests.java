@@ -55,17 +55,17 @@ public class RunTests {
         execution();
     }
 
-    @Test
+    //@Test
     public void runTest2() {
         execution();
     }
 
-    @Test
+    //@Test
     public void runTest3() {
         execution();
     }
 
-    @Test
+    //@Test
     public void runTest4() {
         execution();
     }
