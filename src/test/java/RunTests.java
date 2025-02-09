@@ -55,7 +55,7 @@ public class RunTests {
     @Test
     public void runTest1() {
         execution();
-    }@Test
+    }
 
     void execution() {
         Random random = new Random();
