@@ -2,6 +2,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import config.LoadProperties;
 import config.LoadURLs;
+import config.Log;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,13 +15,14 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class RunTests {
+    static Logger LOGGER = Log.getLOGGER(RunTests.class.getName());
     static Properties properties = LoadProperties.getProperties();
     PageElements pageElements = new PageElements();
 
@@ -45,15 +47,15 @@ public class RunTests {
     @AfterAll
     static void closeDriver() {
         webdriver().driver().close();
-        System.out.println("-------------------------------------------------------------------");
-        System.out.println("The launch is completed");
-        System.out.println("-------------------------------------------------------------------");
+        LOGGER.info("-------------------------------------------------------------------");
+        LOGGER.info("The launch is completed");
+        LOGGER.info("-------------------------------------------------------------------");
     }
 
     @Test
     public void runTest1() {
         execution();
-    }
+    }@Test
 
     void execution() {
         Random random = new Random();
@@ -63,9 +65,9 @@ public class RunTests {
         sleep(pauseBeforeOpen);
 
         for (int i = 0; i < rerunCount; i++) {
-            System.out.println("-------------------------------------------------------------------");
-            System.out.printf("THREAD '%s': OPEN browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
-            System.out.println("-------------------------------------------------------------------");
+            LOGGER.info("-------------------------------------------------------------------");
+            LOGGER.info(String.format("THREAD '%s': OPEN browser %s/%s", Thread.currentThread().getName(), i + 1, rerunCount));
+            LOGGER.info("-------------------------------------------------------------------");
 
             try {
                 open(urls.get(index));
@@ -78,7 +80,7 @@ public class RunTests {
                         pageElements.popupSvg.click();
                         pageElements.popup.shouldNotBe(visible);
                     } catch (Error e) {
-                        e.getMessage();
+                        LOGGER.info(e.getMessage());
                     }
                 }
 
@@ -92,17 +94,17 @@ public class RunTests {
                 }
 
             } catch (Error e) {
-                e.getMessage();
+                LOGGER.info(e.getMessage());
             } finally {
                 sleep(pauseBeforeClose);
                 Selenide.closeWindow();
-                System.out.println("-------------------------------------------------------------------");
-                System.out.printf("THREAD '%s': CLOSE browser %s/%s%n", Thread.currentThread().getName(), i + 1, rerunCount);
-                System.out.println("-------------------------------------------------------------------");
+                LOGGER.info("-------------------------------------------------------------------");
+                LOGGER.info(String.format("THREAD '%s': CLOSE browser %s/%s", Thread.currentThread().getName(), i + 1, rerunCount));
+                LOGGER.info("-------------------------------------------------------------------");
             }
         }
-        System.out.println("-------------------------------------------------------------------");
-        System.out.printf("THREAD '%s' is completed%n", Thread.currentThread().getName());
-        System.out.println("-------------------------------------------------------------------");
+        LOGGER.info("*******************************************************************");
+        LOGGER.info(String.format("\nTHREAD\n'%s'\nIS\nCOMPLETED", Thread.currentThread().getName().toUpperCase()));
+        LOGGER.info("*******************************************************************");
     }
 }
