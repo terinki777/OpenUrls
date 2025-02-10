@@ -61,16 +61,15 @@ public class RunTests {
         Random random = new Random();
         long pauseBeforeOpen = random.nextLong(maxOpen - minOpen) + minOpen;
         long pauseBeforeClose = random.nextLong(maxClose - minClose) + minClose;
-        int index = random.nextInt(urls.size());
         sleep(pauseBeforeOpen);
 
         for (int i = 0; i < rerunCount; i++) {
-            LOGGER.info("-------------------------------------------------------------------");
-            LOGGER.info(String.format("THREAD '%s': OPEN browser %s/%s", Thread.currentThread().getName(), i + 1, rerunCount));
-            LOGGER.info("-------------------------------------------------------------------");
-
             try {
-                open(urls.get(index));
+                LOGGER.info("-------------------------------------------------------------------");
+                LOGGER.info(String.format("THREAD '%s': OPEN browser %s/%s", Thread.currentThread().getName(), i + 1, rerunCount));
+                LOGGER.info("-------------------------------------------------------------------");
+
+                open(urls.get(random.nextInt(urls.size())));
 
                 pageElements.videoPlayer.shouldBe(visible, Duration.ofSeconds(20));
                 Selenide.actions().sendKeys("M").perform();
